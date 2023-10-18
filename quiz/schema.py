@@ -240,10 +240,11 @@ from .models import Questions, Category, Quizzes, Answer
         #         category = Category.objects.get(id=id)
         #         print(category)
         #         category.delete()
-        #         return CategoryDeletion(category=category)
+        #         return
         
         #  > For the deletion method also we use the same principle
         #  > there is no change whatsoever and its relatively very easy same of that of the updation and creation
+        #  > after deletion we don't need  to return anything hence the empty return
 
 
 class QuestionType(DjangoObjectType):
@@ -319,7 +320,7 @@ class CategoryDeletion(graphene.Mutation):
         category = Category.objects.get(id=id)
         print(category)
         category.delete()
-        return CategoryDeletion(category=category)
+        return
 
 class Mutation(graphene.ObjectType):
     add_category = CategoryMutation.Field()
