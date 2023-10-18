@@ -226,6 +226,24 @@ from .models import Questions, Category, Quizzes, Answer
             # id in the graphene as graphene.ID()
             # all the rest is the same the only difference here is that we pass in the id in the mutation field along with the name
             # then the rest is simple django we find the category with the id and then we assing the new name and saves it
+            
+            
+# DELETION OF DATA IN THE TABLE: 
+
+        # class CategoryDeletion(graphene.Mutation):
+        #     class Arguments:
+        #         id = graphene.ID()
+        #     category = graphene.Field(CategoryType)
+            
+        #     @classmethod
+        #     def mutate(cls, root, info, id):
+        #         category = Category.objects.get(id=id)
+        #         print(category)
+        #         category.delete()
+        #         return CategoryDeletion(category=category)
+        
+        #  > For the deletion method also we use the same principle
+        #  > there is no change whatsoever and its relatively very easy same of that of the updation and creation
 
 
 class QuestionType(DjangoObjectType):
@@ -264,16 +282,16 @@ class Query(graphene.ObjectType):
         return Answer.objects.all()
 
 
-# class CategoryMutation(graphene.Mutation):
-#     class Arguments:
-#         name = graphene.String(required=True)
-#     category = graphene.Field(CategoryType)
+class CategoryMutation(graphene.Mutation):
+    class Arguments:
+        name = graphene.String(required=True)
+    category = graphene.Field(CategoryType)
 
-#     @classmethod
-#     def mutate(cls, root, info, name):
-#         category = Category(name=name)
-#         category.save()
-#         return CategoryMutation(category=category)
+    @classmethod
+    def mutate(cls, root, info, name):
+        category = Category(name=name)
+        category.save()
+        return CategoryMutation(category=category)
 
 
 class CategoryUpdation(graphene.Mutation):
@@ -291,8 +309,22 @@ class CategoryUpdation(graphene.Mutation):
         return CategoryUpdation(category=category)
 
 
+class CategoryDeletion(graphene.Mutation):
+    class Arguments:
+        id = graphene.ID()
+    category = graphene.Field(CategoryType)
+    
+    @classmethod
+    def mutate(cls, root, info, id):
+        category = Category.objects.get(id=id)
+        print(category)
+        category.delete()
+        return CategoryDeletion(category=category)
+
 class Mutation(graphene.ObjectType):
+    add_category = CategoryMutation.Field()
     update_category = CategoryUpdation.Field()
+    delete_category = CategoryDeletion.Field()
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)
